@@ -1,5 +1,4 @@
 local myProxy = require "proxy.proxy"
-local stringTools = require "tools.string_tools"
 
 local requestURL = ngx.var.document_uri
 local proxy, err = myProxy:new({uri = requestURL})
@@ -17,26 +16,36 @@ if not connURI and not proxyURI then
     return
 end
 
+local function argsTableToStr(tab)
+    if not tab then
+        return ""
+    end
+
+    local _str = {}
+    for k, v in pairs(tab) do
+        ngx.log(ngx.ERR, "k = ", k, " , v = ", v)
+        table.insert(_str,string.format("%s=%s",k,v))
+    end
+    return table.concat(_str, "&")
+end
+
+
 ngx.log(ngx.ERR, "connURI = ", connURI)
 
 local http = require "resty.http"
-local stringTools = require "tools.string_tools"
 
 local _headers = ngx.req.get_headers() or {}
 local _method = ngx.var.request_method
-local _get_args_str = stringTools.toStringByTable(ngx.req.get_uri_args())
+local _get_args_str = argsTableToStr(ngx.req.get_uri_args())
 local _post_args_str = ""
 
 if _method == "POST" then
-    local _body = {}
     ngx.req.read_body()
     local post_args, err = ngx.req.get_post_args()
+    ngx.log(ngx.ERR, "post_args type = ", type(post_args))
     if post_args then
-        for k, v in pairs(post_args) do
-            _body[k] = v
-        end
+        _post_args_str = argsTableToStr(post_args)
     end
-    _post_args_str = stringTools.toStringByTable(_body)
 end
 
 ngx.log(ngx.ERR, "method = ", _method)

@@ -3,6 +3,9 @@
 这两天学习`openresty`, 利用学习时间, 写了一个动态代理的功能, 使用以下几个模块.
 
 * [redis](https://gist.githubusercontent.com/moonbingbing/9915c66346e8fddcefb5/raw/8921bf06c019c21ca694e82a7a0074ce58c49e3d/redis.lua)
+
+    这里没有直接使用`openresty`的`redis`模块, 而是在原模块上分装了一层, 封装的代码来自`moonbingbing`的源码, 在源码的基础上, 修改了一些配置的个性化参数.
+
 * [lrucache](https://github.com/openresty/lua-resty-lrucache)
 * [http](https://github.com/pintsized/lua-resty-http)
 
